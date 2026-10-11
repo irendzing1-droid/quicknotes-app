@@ -192,3 +192,34 @@ button:hover {
         padding: 1.5rem;
     }
 }
+/* =========================================
+   Note Card Internal Elements (Task 3)
+   ========================================= */
+.note-content {
+    flex-grow: 1; /* Takes up all remaining space, pushing delete button right */
+}
+
+.note-text {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 0.3rem;
+}
+
+.note-meta {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    text-transform: capitalize; /* Makes "personal" look like "Personal" */
+}
+
+.delete-btn {
+    background-color: #e74c3c; /* Red */
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    margin-left: 1rem;
+    flex-shrink: 0; /* Prevents the button from squishing */
+}
+
+.delete-btn:hover {
+    background-color: #c0392b; /* Darker red */
+}
