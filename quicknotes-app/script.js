@@ -10,45 +10,54 @@ const errorMessage = document.querySelector('#error-message');
 const searchInput = document.querySelector('#search-input');
 
 // ==========================================
-// --- 2. STATE (The Notes Array) ---
+// --- 2. STATE ---
 // ==========================================
-// We start with an empty array. Later we will load this from localStorage.
-let notes = [];
+// Load notes from localStorage, or start with an empty array if none exist
+let notes = JSON.parse(localStorage.getItem('quickNotesData')) || [];
 
 // ==========================================
-// --- 3. THE RENDER FUNCTION ---
-// Rebuilds the list from the array using createElement and textContent
+// --- 3. SAVE TO STORAGE ---
+// ==========================================
+function saveNotes() {
+    localStorage.setItem('quickNotesData', JSON.stringify(notes));
+}
+
+// ==========================================
+// --- 4. THE RENDER FUNCTION ---
 // ==========================================
 function renderNotes() {
-    // 1. Clear the current list so we don't duplicate notes
+    // Clear the current list
     notesList.textContent = '';
 
-    // 2. Update the count message
-    if (notes.length === 0) {
+    // Get the search term (we will use this in the filter step)
+    const searchTerm = searchInput.value.toLowerCase().trim();
+
+    // Filter notes based on search term
+    const notesToDisplay = notes.filter(note => 
+        note.text.toLowerCase().includes(searchTerm)
+    );
+
+    // Update the count message based on what is displayed
+    if (notesToDisplay.length === 0) {
         noteCount.textContent = '0 notes';
-    } else if (notes.length === 1) {
+    } else if (notesToDisplay.length === 1) {
         noteCount.textContent = '1 note';
     } else {
-        noteCount.textContent = `${notes.length} notes`;
+        noteCount.textContent = `${notesToDisplay.length} notes`;
     }
 
-    // 3. Loop through the notes array and create a card for each one
-    notes.forEach(note => {
-        // Create the list item (the card container)
+    // Loop through the filtered notes and create a card for each one
+    notesToDisplay.forEach(note => {
         const li = document.createElement('li');
-        // Add the base class + the category class for coloring
         li.classList.add('note-card', `category-${note.category}`);
 
-        // Create a container for the text and metadata
         const contentDiv = document.createElement('div');
         contentDiv.classList.add('note-content');
 
-        // The note text
         const textP = document.createElement('p');
         textP.classList.add('note-text');
-        textP.textContent = note.text; // Safe from XSS
+        textP.textContent = note.text;
 
-        // The metadata line (Category + Date)
         const metaP = document.createElement('p');
         metaP.classList.add('note-meta');
         metaP.textContent = `${note.category} • ${note.createdAt}`;
@@ -60,53 +69,76 @@ function renderNotes() {
         const deleteBtn = document.createElement('button');
         deleteBtn.classList.add('delete-btn');
         deleteBtn.textContent = 'Delete';
-        // We will add the click event listener later, but we'll add the data-id here
-        deleteBtn.dataset.id = note.id;
+        deleteBtn.dataset.id = note.id; // Store the note's ID on the button
 
-        // Put it all together
+        // --- NEW: Add the click event to the delete button ---
+        deleteBtn.addEventListener('click', () => {
+            deleteNote(note.id);
+        });
+
         li.appendChild(contentDiv);
         li.appendChild(deleteBtn);
-
-        // Add the card to the main list
         notesList.appendChild(li);
     });
 }
 
 // ==========================================
-// --- 4. EVENT LISTENERS ---
+// --- 5. DELETE FUNCTION ---
+// ==========================================
+function deleteNote(id) {
+    // Keep only the notes that don't match the id
+    notes = notes.filter(note => note.id !== id);
+    
+    saveNotes();   // Update localStorage
+    renderNotes(); // Update the UI
+}
+
+// ==========================================
+// --- 6. EVENT LISTENERS ---
 // ==========================================
 
 // Handle form submission
 noteForm.addEventListener('submit', (e) => {
-    e.preventDefault(); // Stop the page from refreshing
+    e.preventDefault(); 
 
     const text = noteInput.value.trim();
     const category = noteCategory.value;
 
-    // For now, we will skip validation and just add the note
-    // (We will add validation in Task 4)
+    // Clear any previous error messages
+    errorMessage.textContent = '';
+
+    // --- NEW: VALIDATION ---
+    if (text === '') {
+        errorMessage.textContent = 'Error: Note cannot be empty.';
+        return; // Stop the function here
+    }
+
+    if (text.length > 200) {
+        errorMessage.textContent = 'Error: Note cannot be over 200 characters.';
+        return; // Stop the function here
+    }
 
     // Create the new note object
     const newNote = {
-        id: Date.now(), // Use timestamp as a unique ID
+        id: Date.now(), 
         text: text,
         category: category,
-        createdAt: new Date().toLocaleString() // readable date and time
+        createdAt: new Date().toLocaleString()
     };
 
-    // Add to the array
     notes.push(newNote);
-
-    // Re-render the list
-    renderNotes();
+    saveNotes();   // Save to localStorage
+    renderNotes(); // Update the UI
 
     // Clear the input
     noteInput.value = '';
     noteInput.focus();
 });
 
+// --- NEW: Handle Search Input ---
+searchInput.addEventListener('input', renderNotes);
+
 // ==========================================
-// --- 5. INITIALIZATION ---
+// --- 7. INITIALIZATION ---
 // ==========================================
-// Run the render function once on page load to set the "0 notes" text
 renderNotes();
