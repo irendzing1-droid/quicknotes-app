@@ -12,7 +12,6 @@ const searchInput = document.querySelector('#search-input');
 // ==========================================
 // --- 2. STATE ---
 // ==========================================
-// Load notes from localStorage, or start with an empty array if none exist
 let notes = JSON.parse(localStorage.getItem('quickNotesData')) || [];
 
 // ==========================================
@@ -29,7 +28,7 @@ function renderNotes() {
     // Clear the current list
     notesList.textContent = '';
 
-    // Get the search term (we will use this in the filter step)
+    // Get the search term
     const searchTerm = searchInput.value.toLowerCase().trim();
 
     // Filter notes based on search term
@@ -37,26 +36,23 @@ function renderNotes() {
         note.text.toLowerCase().includes(searchTerm)
     );
 
-    // Update the count message based on what is displayed
-     if (notes.length === 0) {
-        // The notes array is completely empty
+    // --- UPDATE: Counter Text to match exact assignment phrasing ---
+    if (notes.length === 0) {
         noteCount.textContent = 'You have no notes yet';
     } else if (notesToDisplay.length === 0 && searchTerm !== '') {
-        // The user searched, but found no matching notes
         noteCount.textContent = '0 notes';
         
-        // Create the "No results" message in the list
         const noResultsMsg = document.createElement('li');
         noResultsMsg.textContent = 'No notes match your search.';
-        noResultsMsg.classList.add('no-results-msg'); // Add a class for styling
+        noResultsMsg.classList.add('no-results-msg');
         notesList.appendChild(noResultsMsg);
     } else if (notesToDisplay.length === 1) {
-        noteCount.textContent = '1 note';
+        noteCount.textContent = 'You have 1 note'; // Exact phrasing
     } else {
-        noteCount.textContent = `${notesToDisplay.length} notes`;
+        noteCount.textContent = `You have ${notesToDisplay.length} notes`; // Exact phrasing
     }
 
-    //  Loop through the filtered notes and create a card for each one
+    // Loop through the filtered notes and create a card for each one
     notesToDisplay.forEach(note => {
         const li = document.createElement('li');
         li.classList.add('note-card', `category-${note.category}`);
@@ -88,46 +84,40 @@ function renderNotes() {
         li.appendChild(deleteBtn);
         notesList.appendChild(li);
     });
-    
 }
 
 // ==========================================
 // --- 5. DELETE FUNCTION ---
 // ==========================================
 function deleteNote(id) {
-    // Keep only the notes that don't match the id
     notes = notes.filter(note => note.id !== id);
-    
-    saveNotes();   // Update localStorage
-    renderNotes(); // Update the UI
+    saveNotes();
+    renderNotes();
 }
 
 // ==========================================
 // --- 6. EVENT LISTENERS ---
 // ==========================================
 
-// Handle form submission
 noteForm.addEventListener('submit', (e) => {
     e.preventDefault(); 
 
     const text = noteInput.value.trim();
     const category = noteCategory.value;
 
-    // Clear any previous error messages
     errorMessage.textContent = '';
 
-    // --- NEW: VALIDATION ---
-      if (text === '') {
-        errorMessage.textContent = 'Error: Note text cannot be empty.'; // Updated wording
+    // --- UPDATE: Validation Text to match exact assignment phrasing ---
+    if (text === '') {
+        errorMessage.textContent = 'Please type a note first.'; // Exact phrasing
         return; 
     }
 
     if (text.length > 200) {
-        errorMessage.textContent = 'Error: Note cannot exceed 200 characters.'; // Updated wording
+        errorMessage.textContent = 'Notes must be 200 characters or fewer.'; // Exact phrasing
         return; 
     }
 
-    // Create the new note object
     const newNote = {
         id: Date.now(), 
         text: text,
@@ -136,15 +126,13 @@ noteForm.addEventListener('submit', (e) => {
     };
 
     notes.push(newNote);
-    saveNotes();   // Save to localStorage
-    renderNotes(); // Update the UI
+    saveNotes();
+    renderNotes();
 
-    // Clear the input
     noteInput.value = '';
     noteInput.focus();
 });
 
-// --- NEW: Handle Search Input ---
 searchInput.addEventListener('input', renderNotes);
 
 // ==========================================
