@@ -8,6 +8,7 @@ const notesList = document.querySelector('#notes-list');
 const noteCount = document.querySelector('#note-count');
 const errorMessage = document.querySelector('#error-message');
 const searchInput = document.querySelector('#search-input');
+const clearAllBtn = document.querySelector('#clear-all-btn'); // NEW
 
 // ==========================================
 // --- 2. STATE ---
@@ -25,34 +26,30 @@ function saveNotes() {
 // --- 4. THE RENDER FUNCTION ---
 // ==========================================
 function renderNotes() {
-    // Clear the current list
     notesList.textContent = '';
 
-    // Get the search term
     const searchTerm = searchInput.value.toLowerCase().trim();
 
-    // Filter notes based on search term
     const notesToDisplay = notes.filter(note => 
         note.text.toLowerCase().includes(searchTerm)
     );
 
-    // --- UPDATE: Counter Text to match exact assignment phrasing ---
+    // --- COUNTER TEXT WITH PERIODS ---
     if (notes.length === 0) {
-        noteCount.textContent = 'You have no notes yet';
+        noteCount.textContent = 'You have no notes yet.';
     } else if (notesToDisplay.length === 0 && searchTerm !== '') {
-        noteCount.textContent = '0 notes';
+        noteCount.textContent = '0 notes.';
         
         const noResultsMsg = document.createElement('li');
         noResultsMsg.textContent = 'No notes match your search.';
         noResultsMsg.classList.add('no-results-msg');
         notesList.appendChild(noResultsMsg);
     } else if (notesToDisplay.length === 1) {
-        noteCount.textContent = 'You have 1 note'; // Exact phrasing
+        noteCount.textContent = 'You have 1 note.';
     } else {
-        noteCount.textContent = `You have ${notesToDisplay.length} notes`; // Exact phrasing
+        noteCount.textContent = `You have ${notesToDisplay.length} notes.`;
     }
 
-    // Loop through the filtered notes and create a card for each one
     notesToDisplay.forEach(note => {
         const li = document.createElement('li');
         li.classList.add('note-card', `category-${note.category}`);
@@ -99,6 +96,7 @@ function deleteNote(id) {
 // --- 6. EVENT LISTENERS ---
 // ==========================================
 
+// Form Submission
 noteForm.addEventListener('submit', (e) => {
     e.preventDefault(); 
 
@@ -107,14 +105,13 @@ noteForm.addEventListener('submit', (e) => {
 
     errorMessage.textContent = '';
 
-    // --- UPDATE: Validation Text to match exact assignment phrasing ---
     if (text === '') {
-        errorMessage.textContent = 'Please type a note first.'; // Exact phrasing
+        errorMessage.textContent = 'Please type a note first.';
         return; 
     }
 
     if (text.length > 200) {
-        errorMessage.textContent = 'Notes must be 200 characters or fewer.'; // Exact phrasing
+        errorMessage.textContent = 'Notes must be 200 characters or fewer.';
         return; 
     }
 
@@ -133,7 +130,20 @@ noteForm.addEventListener('submit', (e) => {
     noteInput.focus();
 });
 
+// Search Input
 searchInput.addEventListener('input', renderNotes);
+
+// Clear All Button
+clearAllBtn.addEventListener('click', () => {
+    // Use the built-in browser confirm dialog
+    const userConfirmed = window.confirm("Are you sure you want to clear all notes? This cannot be undone.");
+    
+    if (userConfirmed) {
+        notes = []; // Wipe the array
+        saveNotes(); // Wipe localStorage
+        renderNotes(); // Update the UI
+    }
+});
 
 // ==========================================
 // --- 7. INITIALIZATION ---

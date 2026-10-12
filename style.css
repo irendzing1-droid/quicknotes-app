@@ -10,15 +10,15 @@
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    background-color: #f4f7f6; /* Light gray background */
+    background-color: #f4f7f6;
     color: #333;
 }
 
 /* =========================================
-   Header Styling (Coloured)
+   Header Styling
    ========================================= */
 header {
-    background-color: #2c3e50; /* Dark blue/gray */
+    background-color: #2c3e50;
     color: #ffffff;
     text-align: center;
     padding: 2rem 1rem;
@@ -36,7 +36,7 @@ header p {
 }
 
 /* =========================================
-   Main Content Layout (Centred, max 700px)
+   Main Content Layout
    ========================================= */
 main {
     max-width: 700px;
@@ -45,7 +45,7 @@ main {
 }
 
 /* =========================================
-   Section Cards (White, rounded corners)
+   Section Cards
    ========================================= */
 section {
     background-color: #ffffff;
@@ -63,23 +63,23 @@ h2 {
 }
 
 /* =========================================
-   Form Styling (Flexbox)
+   Form Styling (Desktop Horizontal)
    ========================================= */
 #note-form {
     display: flex;
-    flex-direction: row; /* Change from column to row */
-    align-items: flex-end; /* Aligns the button nicely with the inputs */
+    flex-direction: row;
+    align-items: flex-end;
     gap: 1rem;
     margin-bottom: 1rem;
-    flex-wrap: wrap; /* Allows wrapping on smaller desktop screens */
+    flex-wrap: wrap;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    flex: 1; /* Makes the inputs stretch to fill available space */
-    min-width: 200px; /* Prevents inputs from getting too squished */
+    flex: 1;
+    min-width: 200px;
 }
 
 label {
@@ -101,11 +101,11 @@ input[type="text"]:focus, select:focus {
     box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
 }
 
-button {
-    background-color: #3498db; /* Blue */
+button[type="submit"] {
+    background-color: #3498db;
     color: white;
     border: none;
-    padding: 1rem;
+    padding: 0.8rem 1.5rem;
     font-size: 1rem;
     font-weight: bold;
     border-radius: 5px;
@@ -113,27 +113,47 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
+button[type="submit"]:hover {
     background-color: #2980b9;
 }
 
-/* Error Message Styling */
 .error {
-    color: #e74c3c; /* Red */
+    color: #e74c3c;
     font-weight: bold;
     font-size: 0.9rem;
-    min-height: 20px; /* Prevents layout shift when text appears */
+    min-height: 20px;
 }
 
 /* =========================================
    Notes Section Styling
    ========================================= */
 .search-wrapper {
+    display: flex; /* Add this */
+    gap: 10px;      /* Add this */
     margin-bottom: 1rem;
+    align-items: center;
 }
 
 .search-wrapper input {
-    width: 100%;
+    flex-grow: 1; /* Allows input to fill remaining space */
+}
+
+/* --- New Clear All Button Styling --- */
+.clear-all-btn {
+    background-color: #e74c3c; /* Red */
+    color: white;
+    border: none;
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.clear-all-btn:hover {
+    background-color: #c0392b;
 }
 
 #note-count {
@@ -143,7 +163,7 @@ button:hover {
 }
 
 #notes-list {
-    list-style: none; /* Remove default bullets */
+    list-style: none;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -152,86 +172,55 @@ button:hover {
 /* =========================================
    Note Cards & Category Colors
    ========================================= */
-/* Note card base styling */
 .note-card {
     background-color: #ffffff;
     border: 1px solid #ecf0f1;
     border-radius: 5px;
     padding: 1rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    
-    /* Flex layout to push the Delete button to the right */
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-/* Category-specific left borders */
-.category-personal {
-    border-left: 6px solid #2ecc71; /* Green */
-}
+.category-personal { border-left: 6px solid #2ecc71; }
+.category-work { border-left: 6px solid #e74c3c; }
+.category-study { border-left: 6px solid #3498db; }
 
-.category-work {
-    border-left: 6px solid #e74c3c; /* Dark Red */
-}
-
-.category-study {
-    border-left: 6px solid #3498db; /* Blue */
-}
-
-/* =========================================
-   Media Query (Mobile Stacking)
-   ========================================= */
-@media (max-width: 600px) {
-    #note-form {
-        /* Stacks the form controls vertically instead of side-by-side */
-        flex-direction: column; 
-        align-items: stretch; /* Makes inputs and button full width */
-    }
-    
-    header h1 {
-        font-size: 2rem;
-    }
-    
-    section {
-        padding: 1.5rem;
-    }
-}
-/* =========================================
-   Note Card Internal Elements (Task 3)
-   ========================================= */
-.note-content {
-    flex-grow: 1; /* Takes up all remaining space, pushing delete button right */
-}
-
+.note-content { flex-grow: 1; }
 .note-text {
     font-size: 1.1rem;
     font-weight: bold;
     color: #2c3e50;
     margin-bottom: 0.3rem;
 }
-
 .note-meta {
     font-size: 0.8rem;
     color: #7f8c8d;
-    text-transform: capitalize; /* Makes "personal" look like "Personal" */
+    text-transform: capitalize;
 }
 
 .delete-btn {
-    background-color: #e74c3c; /* Red */
+    background-color: #e74c3c;
     padding: 0.5rem 1rem;
     font-size: 0.8rem;
     margin-left: 1rem;
-    flex-shrink: 0; /* Prevents the button from squishing */
+    flex-shrink: 0;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
 }
+.delete-btn:hover { background-color: #c0392b; }
 
-.delete-btn:hover {
-    background-color: #c0392b; /* Darker red */
-}
-.no-results-msg {
-    text-align: center;
-    color: #7f8c8d;
-    font-style: italic;
-    padding: 1rem;
-    list-style: none;
+/* =========================================
+   Media Query (Mobile Stacking)
+   ========================================= */
+@media (max-width: 600px) {
+    #note-form {
+        flex-direction: column; 
+        align-items: stretch;
+    }
+    header h1 { font-size: 2rem; }
+    section { padding: 1.5rem; }
 }
