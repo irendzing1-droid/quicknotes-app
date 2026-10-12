@@ -67,15 +67,19 @@ h2 {
    ========================================= */
 #note-form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Change from column to row */
+    align-items: flex-end; /* Aligns the button nicely with the inputs */
     gap: 1rem;
     margin-bottom: 1rem;
+    flex-wrap: wrap; /* Allows wrapping on smaller desktop screens */
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    flex: 1; /* Makes the inputs stretch to fill available space */
+    min-width: 200px; /* Prevents inputs from getting too squished */
 }
 
 label {
@@ -182,6 +186,7 @@ button:hover {
     #note-form {
         /* Stacks the form controls vertically instead of side-by-side */
         flex-direction: column; 
+        align-items: stretch; /* Makes inputs and button full width */
     }
     
     header h1 {
@@ -222,4 +227,11 @@ button:hover {
 
 .delete-btn:hover {
     background-color: #c0392b; /* Darker red */
+}
+.no-results-msg {
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+    padding: 1rem;
+    list-style: none;
 }

@@ -38,15 +38,25 @@ function renderNotes() {
     );
 
     // Update the count message based on what is displayed
-    if (notesToDisplay.length === 0) {
+     if (notes.length === 0) {
+        // The notes array is completely empty
+        noteCount.textContent = 'You have no notes yet';
+    } else if (notesToDisplay.length === 0 && searchTerm !== '') {
+        // The user searched, but found no matching notes
         noteCount.textContent = '0 notes';
+        
+        // Create the "No results" message in the list
+        const noResultsMsg = document.createElement('li');
+        noResultsMsg.textContent = 'No notes match your search.';
+        noResultsMsg.classList.add('no-results-msg'); // Add a class for styling
+        notesList.appendChild(noResultsMsg);
     } else if (notesToDisplay.length === 1) {
         noteCount.textContent = '1 note';
     } else {
         noteCount.textContent = `${notesToDisplay.length} notes`;
     }
 
-    // Loop through the filtered notes and create a card for each one
+    //  Loop through the filtered notes and create a card for each one
     notesToDisplay.forEach(note => {
         const li = document.createElement('li');
         li.classList.add('note-card', `category-${note.category}`);
@@ -65,13 +75,11 @@ function renderNotes() {
         contentDiv.appendChild(textP);
         contentDiv.appendChild(metaP);
 
-        // The Delete Button
         const deleteBtn = document.createElement('button');
         deleteBtn.classList.add('delete-btn');
         deleteBtn.textContent = 'Delete';
-        deleteBtn.dataset.id = note.id; // Store the note's ID on the button
+        deleteBtn.dataset.id = note.id;
 
-        // --- NEW: Add the click event to the delete button ---
         deleteBtn.addEventListener('click', () => {
             deleteNote(note.id);
         });
@@ -80,6 +88,7 @@ function renderNotes() {
         li.appendChild(deleteBtn);
         notesList.appendChild(li);
     });
+    
 }
 
 // ==========================================
@@ -108,14 +117,14 @@ noteForm.addEventListener('submit', (e) => {
     errorMessage.textContent = '';
 
     // --- NEW: VALIDATION ---
-    if (text === '') {
-        errorMessage.textContent = 'Error: Note cannot be empty.';
-        return; // Stop the function here
+      if (text === '') {
+        errorMessage.textContent = 'Error: Note text cannot be empty.'; // Updated wording
+        return; 
     }
 
     if (text.length > 200) {
-        errorMessage.textContent = 'Error: Note cannot be over 200 characters.';
-        return; // Stop the function here
+        errorMessage.textContent = 'Error: Note cannot exceed 200 characters.'; // Updated wording
+        return; 
     }
 
     // Create the new note object
